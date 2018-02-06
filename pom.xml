@@ -1,14 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.suny.seckill</groupId>
+    <groupId>org.seckill.seckill</groupId>
     <artifactId>seckill</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>seckill Maven Webapp</name>
     <url>http://maven.apache.org</url>
     <dependencies>
 
-        <!--junit测试-->
+        <!-- junit3.0默认使用的是编程的方式，4.0使用注解的方式运行junit -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -16,12 +16,12 @@
             <scope>test</scope>
         </dependency>
 
-        <!--配置日志相关，日志门面使用slf4j，日志的具体实现由logback实现-->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.8.0-alpha2</version>
-        </dependency>
+        <!-- 补全项目依赖 -->
+        <!-- 1:日志  java日志:slf4j,log4j,logback,common-logging
+            slf4j 是规范/接口 针对编程
+            日志实现:log4j,logback,common-logging
+            使用:slf4j + logback
+        -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -32,6 +32,13 @@
             <artifactId>log4j-core</artifactId>
             <version>2.6.1</version>
         </dependency>
+        <!-- 实现slf4j接口并整合，也就是说编程中使用slf4j就可以了 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.8.0-alpha2</version>
+        </dependency>
+
 
         <!--数据库相关依赖-->
         <!--首先导入连接Mysql数据连接-->
@@ -41,19 +48,20 @@
             <version>5.1.39</version>
         </dependency>
 
-        <!--导入数据库连接池-->
+        <!-- 数据库连接池，用于优化数据库 -->
         <dependency>
             <groupId>c3p0</groupId>
             <artifactId>c3p0</artifactId>
             <version>0.9.1.2</version>
         </dependency>
 
-        <!--导入mybatis依赖-->
+        <!-- DAO框架:MyBatis依赖 -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
             <version>3.4.2</version>
         </dependency>
+        <!-- mybatis 自身实现的spring整合依赖 -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
@@ -65,7 +73,7 @@
             <version>1.0.2</version>
         </dependency>
 
-        <!--导入Servlet web相关的依赖-->
+        <!-- 3:Servlet web相关依赖 -->
         <dependency>
             <groupId>taglibs</groupId>
             <artifactId>standard</artifactId>
@@ -87,7 +95,15 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
         </dependency>
-        <!--导入spring相关依赖-->
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!--4:spring依赖 -->
+        <!--1)spring核心依赖-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -103,6 +119,7 @@
             <artifactId>spring-context</artifactId>
             <version>4.3.6.RELEASE</version>
         </dependency>
+        <!--2)spring dao层依赖 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
@@ -113,6 +130,7 @@
             <artifactId>spring-tx</artifactId>
             <version>4.3.6.RELEASE</version>
         </dependency>
+        <!--3)spring web相关-->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
@@ -123,7 +141,8 @@
             <artifactId>spring-webmvc</artifactId>
             <version>4.3.7.RELEASE</version>
         </dependency>
-        <!--导入springTest-->
+
+        <!--4)spring test 相关依赖 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -154,6 +173,7 @@
             <version>3.2.2</version>
         </dependency>
     </dependencies>
+    
     <build>
         <finalName>seckill</finalName>
         <plugins>

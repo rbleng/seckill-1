@@ -42,9 +42,9 @@
 SpringMvc默认就会默认去`WEB-INF`下查找默认规范的配置文件,像我这里配置的`servlet-name`是`seckill-dispatchServlet`的话,则默认会寻找`WEB-INF`一个名为`seckill-dispatchServlet-Servlet.xml`的配置文件
 
 #### 接下来编写Controller  `SeckillController`
-首先在`com.suny`下建立包为`Controller`的包,然后在里面新建一个类`SeckillController`：
+首先在`org.seckill`下建立包为`Controller`的包,然后在里面新建一个类`SeckillController`：
 ```java
-package com.suny.controller;
+package org.seckill.controller;
 
 /**
  * Created by 孙建荣 on 17-5-24.下午10:11
@@ -151,9 +151,9 @@ public class SeckillController {
      */
     @RequestMapping(value = "/time/now", method = RequestMethod.GET)
     @ResponseBody
-    public SeckillResult<LocalDateTime> time() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        return new SeckillResult<>(true, localDateTime);
+    public SeckillResult<Date> time() {
+        Date Date = Date.now();
+        return new SeckillResult<>(true, Date);
     }
 
 
@@ -164,7 +164,7 @@ public class SeckillController {
 ``SeckillResult``:
 
 ````java
-package com.suny.dto;
+package org.seckill.dto;
 
 /**
  * 封装所有的ajax请求返回类型,方便返回json
@@ -396,10 +396,10 @@ public class SeckillResult<T> {
 
 </html>
 ```
-  然后把项目运行一下我们又会碰到一个错误就是`jstl`中的`fmt`标签格式化时间只能格式化`java.Util.Date`类型的日期跟时间,而在我们这里我么使用了`java8`的`LocalDateTIme`,所以解析时间会出异常,这时我们应该想到自己去实现`jstl`标签来自定义解析这个时间日期
+  然后把项目运行一下我们又会碰到一个错误就是`jstl`中的`fmt`标签格式化时间只能格式化`java.Util.Date`类型的日期跟时间,而在我们这里我么使用了`java8`的`Date`,所以解析时间会出异常,这时我们应该想到自己去实现`jstl`标签来自定义解析这个时间日期
   自定义标签步骤如下:  
   - 在` /WEB-INF `创建目录 `tags`
-  - 然后创建一个文件` localDateTime.tag` 在`tags`目录下
+  - 然后创建一个文件` Date.tag` 在`tags`目录下
      + `localData.tag`用来格式化日期
       + `localDataTime.tag`用来格式化日期跟时间的组合,也就是数据库中的`Timestamp`类型
   -然后在`localDataTime.tag`中写自己自定义的格式化流程
@@ -410,7 +410,7 @@ public class SeckillResult<T> {
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--        这里是定义页面使用标签中的属性设置,<tags:localDataTime dateTime="${sk.createTIme}"/>     --%>
-<%@ attribute name="dateTime" required="true" type="java.time.LocalDateTime" %>
+<%@ attribute name="dateTime" required="true" type="java.time.Date" %>
 <%@ attribute name="pattern" required="false" type="java.lang.String" %>
 <%--首选判断日期时间转换规则是否存在,不存在给出默认的规则--%>
 <c:if test="${empty pattern}">
@@ -695,20 +695,20 @@ var seckill = {
             return time;
         }
     },
-    convertTime: function (localDateTime) {
-        var year = localDateTime.year;
-        var monthValue = localDateTime.monthValue;
-        var dayOfMonth = localDateTime.dayOfMonth;
-        var hour = localDateTime.hour;
-        var minute = localDateTime.minute;
-        var second = localDateTime.second;
+    convertTime: function (Date) {
+        var year = Date.year;
+        var monthValue = Date.monthValue;
+        var dayOfMonth = Date.dayOfMonth;
+        var hour = Date.hour;
+        var minute = Date.minute;
+        var second = Date.second;
         return year + "-" + monthValue + "-" + dayOfMonth + " " + hour + ":" + minute + ":" + second;
     }
 };
 
 ```
 自定义jstl标签参考资料  
-[stackoverflow上的资料1](https://stackoverflow.com/questions/35606551/jstl-localdatetime-format)  
+[stackoverflow上的资料1](https://stackoverflow.com/questions/35606551/jstl-Date-format)  
 [stackoverflow上的资料2](https://stackoverflow.com/questions/30230517/taglib-to-display-java-time-localdate-formatted)  
 编写完了就部署运行吧,不出意外的话就是这个样子的:  
 ![完整的页面](../images/result_1.jpg)

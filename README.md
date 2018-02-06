@@ -51,7 +51,7 @@
 ```
 ### 导入到IDE  
 这里因为是使用`IDEA`创建的项目,所以使用`IDEA`直接打开是很方便的,提前是你要配置好`maven`的相关配置,以及项目`JDK`版本,
-`JDK`版本必须在`1.8`以上,因为在项目中使用了`Java8`的`LocalDateTime`以及`LocalDate`,所以低于这个版本编译会失败的
+`JDK`版本必须在`1.8`以上,因为在项目中使用了`Java8`的`Date`以及`LocalDate`,所以低于这个版本编译会失败的
   - IDEA  
   直接在主界面选择`Open`,然后找到项目所在路径,点击导入就可以了
   - Eclipse
@@ -72,9 +72,9 @@
  * 首先我们要搭建出一个符合Maven约定的目录来,这里大致有两种方式,第一种:
 1. 第一种使用命令行手动构建一个maven结构的目录,当然我基本不会这样构建
 ```
-mvn archetype:generate -DgroupId=com.suny.seckill -DartifactId=seckill -Dpackage=com.suny.seckill -Dversion=1.0-SNAPSHOT -DarchetypeArtifactId=maven-archetype-webapp
+mvn archetype:generate -DgroupId=org.seckill.seckill -DartifactId=seckill -Dpackage=org.seckill.seckill -Dversion=1.0-SNAPSHOT -DarchetypeArtifactId=maven-archetype-webapp
 ```  
-这里要注意的是使用`archetype:generate`进行创建,在Maven老版本中是使用`archetype:create`,现在这种方法已经被弃用了,所以使用命令行创建的话注意了,稍微解释下这段语句的意思,就是构建一个一个`maven-archetype-webapp`骨架的Webapp项目,然后`groupId`为`com.suny.seckill `,`artifactId`为`seckill`,这里是Maven相关知识,可以按照自己的情况进行修改  
+这里要注意的是使用`archetype:generate`进行创建,在Maven老版本中是使用`archetype:create`,现在这种方法已经被弃用了,所以使用命令行创建的话注意了,稍微解释下这段语句的意思,就是构建一个一个`maven-archetype-webapp`骨架的Webapp项目,然后`groupId`为`org.seckill.seckill `,`artifactId`为`seckill`,这里是Maven相关知识,可以按照自己的情况进行修改  
 
 2.第二种直接在IDE中进行创建,这里以IDEA为例
   + 点击左上角`File>New>Project>Maven`
@@ -94,7 +94,7 @@ mvn archetype:generate -DgroupId=com.suny.seckill -DartifactId=seckill -Dpackage
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
           <modelVersion>4.0.0</modelVersion>
-          <groupId>com.suny.seckill</groupId>
+          <groupId>org.seckill.seckill</groupId>
           <artifactId>seckill</artifactId>
           <version>1.0-SNAPSHOT</version>
           <name>seckill Maven Webapp</name>
@@ -342,10 +342,10 @@ select @@version;
 #### 建立实体类
  - 首先建立`SuccessKilled`  秒杀状态表
 ```java
-package com.suny.entity;
+package org.seckill.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Date;
 
 
 public class SuccessKilled implements Serializable {
@@ -357,14 +357,14 @@ public class SuccessKilled implements Serializable {
     /* 秒杀的状态*/
     private short state;
     /* 创建时间*/
-    private LocalDateTime createTime;
+    private Date createTime;
     /* 多对一,因为一件商品在库存中肯定有许多,对应的购买信息也有很多*/
     private Seckill seckill;
 
     public SuccessKilled() {
     }
 
-    public SuccessKilled(long seckillId, long userPhone, short state, LocalDateTime createTime, Seckill seckill) {
+    public SuccessKilled(long seckillId, long userPhone, short state, Date createTime, Seckill seckill) {
         this.seckillId = seckillId;
         this.userPhone = userPhone;
         this.state = state;
@@ -396,11 +396,11 @@ public class SuccessKilled implements Serializable {
         this.state = state;
     }
 
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -428,10 +428,10 @@ public class SuccessKilled implements Serializable {
 ```
  - 再建立`Seckill` 秒杀商品信息
 ```java
-package com.suny.entity;
+package org.seckill.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Date;
 
 public class Seckill implements Serializable {
 
@@ -443,16 +443,16 @@ public class Seckill implements Serializable {
     /* 秒杀的商品编号 */
     private int number;
     /* 开始秒杀的时间 */
-    private LocalDateTime startTime;
+    private Date startTime;
     /* 结束秒杀的时间 */
-    private LocalDateTime endTime;
+    private Date endTime;
     /* 创建的时间 */
-    private LocalDateTime createTIme;
+    private Date createTIme;
 
     public Seckill() {
     }
 
-    public Seckill(long seckillId, String name, int number, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime createTIme) {
+    public Seckill(long seckillId, String name, int number, Date startTime, Date endTime, Date createTIme) {
         this.seckillId = seckillId;
         this.name = name;
         this.number = number;
@@ -485,33 +485,33 @@ public class Seckill implements Serializable {
         this.number = number;
     }
 
-    public LocalDateTime getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
-    public LocalDateTime getCreateTIme() {
+    public Date getCreateTIme() {
         return createTIme;
     }
 
-    public void setCreateTIme(LocalDateTime createTIme) {
+    public void setCreateTIme(Date createTIme) {
         this.createTIme = createTIme;
     }
 
     @Override
     public String toString() {
-        return "com.suny.entity.Seckill{" +
+        return "org.seckill.entity.Seckill{" +
                 "主键ID=" + seckillId +
                 ", 秒杀商品='" + name + '\'' +
                 ", 编号=" + number +
@@ -525,17 +525,17 @@ public class Seckill implements Serializable {
 
 ```
  #### 对实体类创建对应的`mapper`接口,也就是`dao`接口类
- - 首先创建`SeckillMapper`,在我这里位于`com.suny.dao`包下
+ - 首先创建`SeckillDao`,在我这里位于`org.seckill.dao`包下
  ```java
-package com.suny.dao;
+package org.seckill.dao;
 
-import com.suny.entity.Seckill;
+import org.seckill.entity.Seckill;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.LocalDateTime;
+import java.time.Date;
 import java.util.List;
 
-public interface SeckillMapper {
+public interface SeckillDao {
     /**
      * 根据传过来的<code>seckillId</code>去减少商品的库存.
      *
@@ -543,7 +543,7 @@ public interface SeckillMapper {
      * @param killTime  秒杀的精确时间
      * @return 如果秒杀成功就返回1,否则就返回0
      */
-    int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") LocalDateTime killTime);
+    int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") Date killTime);
 
     /**
      * 根据传过来的<code>seckillId</code>去查询秒杀商品的详情.
@@ -564,15 +564,15 @@ public interface SeckillMapper {
 }
 
 ```
- - 再创建`SuccessKilledMapper`
+ - 再创建`SuccessKilledDao`
  ```java
-package com.suny.dao;
+package org.seckill.dao;
 
-import com.suny.entity.SuccessKilled;
+import org.seckill.entity.SuccessKilled;
 import org.apache.ibatis.annotations.Param;
 
 
-public interface SuccessKilledMapper {
+public interface SuccessKilledDao {
     /**
      * 插入一条详细的购买信息.
      *
@@ -596,14 +596,14 @@ public interface SuccessKilledMapper {
 #### 接下来书写`xml`配置文件
 ##### 建立对应的`mapper.xml`  
 
-首先在`src/main/resources`建立`com.suny.dao`这个包,也就是对应`mapper`接口文件包一样的包名,这样符合Maven的约定,就是资源放置在`Resource`包下,`Java`包下则是放置`java`类文件,编译后最后还是会在同一个目录下.  
+首先在`src/main/resources`建立`org.seckill.dao`这个包,也就是对应`mapper`接口文件包一样的包名,这样符合Maven的约定,就是资源放置在`Resource`包下,`Java`包下则是放置`java`类文件,编译后最后还是会在同一个目录下.  
 ![建包](images/004.png)
-- 首先建立`SeckillMapper.xml`
+- 首先建立`SeckillDao.xml`
 ```xml
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.suny.dao.SeckillMapper">
+<mapper namespace="org.seckill.dao.SeckillDao">
     <!--这里的<=需要使用进行忽略,所以是要进行忽略,使用CDATA 区段中的文本会被解析器忽略 -->
     <update id="reduceNumber">
         UPDATE seckill
@@ -618,7 +618,7 @@ public interface SuccessKilledMapper {
               AND number > 0
     </update>
 
-    <select id="queryById" resultType="com.suny.entity.Seckill">
+    <select id="queryById" resultType="org.seckill.entity.Seckill">
         SELECT
             *
         FROM seckill AS s
@@ -626,7 +626,7 @@ public interface SuccessKilledMapper {
     </select>
 
 
-    <select id="queryAll" resultType="com.suny.entity.Seckill">
+    <select id="queryAll" resultType="org.seckill.entity.Seckill">
         SELECT
             *
         FROM seckill AS s
@@ -635,20 +635,20 @@ public interface SuccessKilledMapper {
     </select>
 </mapper>
 ```
-- 建立`SuccessKilledMapper.xml`
+- 建立`SuccessKilledDao.xml`
 ```xml
 
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.suny.dao.SuccessKilledMapper">
+<mapper namespace="org.seckill.dao.SuccessKilledDao">
     <!--添加主键冲突时忽略错误返回0-->  
     <insert id="insertSuccessKilled">
         INSERT IGNORE INTO success_killed (seckill_id, user_phone, state)
         VALUES (#{seckillId}, #{userPhone}, 0)
     </insert>
     <!--根据seckillId查询SuccessKilled对象,并携带Seckill对象,告诉mybatis把映射结果映射到SuccessKill属性同时映射到Seckill属性-->  
-    <select id="queryByIdWithSeckill" resultType="com.suny.entity.SuccessKilled">
+    <select id="queryByIdWithSeckill" resultType="org.seckill.entity.SuccessKilled">
         SELECT
             sk.seckill_id,
             sk.user_phone,
@@ -730,7 +730,7 @@ jdbc.url=jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=u
         <!--配置mybatis全局配置文件-->
         <property name="configLocation" value="mybatis-config.xml"/>
         <!--配置entity包,也就是实体类包,自动扫描,用于别名配置-->
-        <property name="typeAliasesPackage" value="com.suny.entity"/>
+        <property name="typeAliasesPackage" value="org.seckill.entity"/>
         <!--配置需要扫描的mapper.xml文件-->
         <property name="mapperLocations" value="classpath*:com/suny/dao/*.xml"/>
     </bean>
@@ -740,7 +740,7 @@ jdbc.url=jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=u
         <!--注入sqlSessionFactory,请注意不要使用sqlSessionFactoryBean,否则会出现注入异常-->
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         <!--给出要扫描的mapper接口-->
-        <property name="basePackage" value="com.suny.dao"/>
+        <property name="basePackage" value="org.seckill.dao"/>
     </bean>
 
 </beans>
@@ -749,11 +749,11 @@ jdbc.url=jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=u
 
 - 基础的部分我们搭建完成了,然后要开始测试了
  在`IDEA`里面有一个快速建立测试的快捷键`Ctrl+Shift+T`,在某个要测试的类里面按下这个快捷键就会出现`Create new Test`,然后选择你要测试的方法跟测试的工具就可以了,这里我们使用Junit作为测试
-  + 建立`SeckillMapperTest`文件,代码如下
+  + 建立`SeckillDaoTest`文件,代码如下
  ```java
-package com.suny.dao;
+package org.seckill.dao;
 
-import com.suny.entity.Seckill;
+import org.seckill.entity.Seckill;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -761,7 +761,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 
-import java.time.LocalDateTime;
+import java.time.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -769,28 +769,28 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:spring/applicationContext-dao.xml"})
-public class SeckillMapperTest {
+public class SeckillDaoTest {
     @Resource
-    private SeckillMapper seckillMapper;
+    private SeckillDao SeckillDao;
 
     @Test
     public void reduceNumber() throws Exception {
         long seckillId=1000;
-        LocalDateTime localDateTime=LocalDateTime.now();
-        int i = seckillMapper.reduceNumber(seckillId, localDateTime);
+        Date Date=Date.now();
+        int i = SeckillDao.reduceNumber(seckillId, Date);
         System.out.println(i);
     }
 
     @Test
     public void queryById() throws Exception {
         long seckillId = 1000;
-        Seckill seckill = seckillMapper.queryById(seckillId);
+        Seckill seckill = SeckillDao.queryById(seckillId);
         System.out.println(seckill.toString());
     }
 
     @Test
     public void queryAll() throws Exception {
-        List<Seckill> seckills = seckillMapper.queryAll(0, 100);
+        List<Seckill> seckills = SeckillDao.queryAll(0, 100);
         for (Seckill seckill : seckills) {
             System.out.println(seckill.toString());
         }
@@ -856,7 +856,7 @@ public interface SeckillService {
  + DTO,  跟VO的概念有点混淆,也是相当于页面需要的数据封装成一个实体类
  + POJO, 简单的无规则java对象
  
- 在`com.suny`下建立`dto`包,然后建立`Exposer`类,这个类是秒杀时数据库那边处理的结果的对象
+ 在`org.seckill`下建立`dto`包,然后建立`Exposer`类,这个类是秒杀时数据库那边处理的结果的对象
   ```java
 public class Exposer {
     /*是否开启秒杀 */
@@ -866,11 +866,11 @@ public class Exposer {
     /* id为seckillId的商品秒杀地址   */
     private long seckillId;
     /* 系统当前的时间   */
-    private LocalDateTime now;
+    private Date now;
     /* 秒杀开启的时间   */
-    private LocalDateTime start;
+    private Date start;
     /*  秒杀结束的时间  */
-    private LocalDateTime end;
+    private Date end;
 
     public Exposer() {
     }
@@ -881,7 +881,7 @@ public class Exposer {
         this.seckillId = seckillId;
     }
 
-    public Exposer(boolean exposed, long seckillId, LocalDateTime now, LocalDateTime start, LocalDateTime end) {
+    public Exposer(boolean exposed, long seckillId, Date now, Date start, Date end) {
         this.exposed = exposed;
         this.seckillId = seckillId;
         this.now = now;
@@ -918,27 +918,27 @@ public class Exposer {
         this.seckillId = seckillId;
     }
 
-    public LocalDateTime getNow() {
+    public Date getNow() {
         return now;
     }
 
-    public void setNow(LocalDateTime now) {
+    public void setNow(Date now) {
         this.now = now;
     }
 
-    public LocalDateTime getStart() {
+    public Date getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(Date start) {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
+    public Date getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEnd(Date end) {
         this.end = end;
     }
 
@@ -955,7 +955,7 @@ public class Exposer {
     }
 }
 ```
-然后我们给页面返回的数据应该是更加友好的封装数据,所以我们再在`com.suny.dto`包下再建立`SeckillExecution`用来封装给页面的结果:
+然后我们给页面返回的数据应该是更加友好的封装数据,所以我们再在`org.seckill.dto`包下再建立`SeckillExecution`用来封装给页面的结果:
 
 ```java
 public class SeckillExecution {
@@ -1088,9 +1088,9 @@ public class SeckillServiceImpl implements SeckillService {
     private final String salt = "thisIsASaltValue";
 
     @Autowired
-    private SeckillMapper seckillMapper;
+    private SeckillDao SeckillDao;
     @Autowired
-    private SuccessKilledMapper successKilledMapper;
+    private SuccessKilledDao SuccessKilledDao;
 
 
     /**
@@ -1100,7 +1100,7 @@ public class SeckillServiceImpl implements SeckillService {
      */
     @Override
     public List<Seckill> getSeckillList() {
-        return seckillMapper.queryAll(0, 4);
+        return SeckillDao.queryAll(0, 4);
     }
 
     /**
@@ -1111,7 +1111,7 @@ public class SeckillServiceImpl implements SeckillService {
      */
     @Override
     public Seckill getById(long seckillId) {
-        return seckillMapper.queryById(seckillId);
+        return SeckillDao.queryById(seckillId);
     }
 
     /**
@@ -1123,7 +1123,7 @@ public class SeckillServiceImpl implements SeckillService {
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
         // 根据秒杀的ID去查询是否存在这个商品
-       /* Seckill seckill = seckillMapper.queryById(seckillId);
+       /* Seckill seckill = SeckillDao.queryById(seckillId);
         if (seckill == null) {
             logger.warn("查询不到这个秒杀产品的记录");
             return new Exposer(false, seckillId);
@@ -1131,7 +1131,7 @@ public class SeckillServiceImpl implements SeckillService {
         Seckill seckill = redisDao.getSeckill(seckillId);
         if (seckill == null) {
             // 访问数据库读取数据
-            seckill = seckillMapper.queryById(seckillId);
+            seckill = SeckillDao.queryById(seckillId);
             if (seckill == null) {
                 return new Exposer(false, seckillId);
             } else {
@@ -1141,9 +1141,9 @@ public class SeckillServiceImpl implements SeckillService {
         }
 
         // 判断是否还没到秒杀时间或者是过了秒杀时间
-        LocalDateTime startTime = seckill.getStartTime();
-        LocalDateTime endTime = seckill.getEndTime();
-        LocalDateTime nowTime = LocalDateTime.now();
+        Date startTime = seckill.getStartTime();
+        Date endTime = seckill.getEndTime();
+        Date nowTime = Date.now();
         //   开始时间大于现在的时候说明没有开始秒杀活动    秒杀活动结束时间小于现在的时间说明秒杀已经结束了
        /* if (!nowTime.isAfter(startTime)) {
             logger.info("现在的时间不在开始时间后面,未开启秒杀");
@@ -1183,23 +1183,23 @@ public class SeckillServiceImpl implements SeckillService {
             throw new SeckillException("seckill data rewrite");
         }
         // 执行秒杀业务逻辑
-        LocalDateTime nowTIme = LocalDateTime.now();
+        Date nowTIme = Date.now();
 
         try {
             //执行减库存操作
-            int reduceNumber = seckillMapper.reduceNumber(seckillId, nowTIme);
+            int reduceNumber = SeckillDao.reduceNumber(seckillId, nowTIme);
             if (reduceNumber <= 0) {
                 logger.warn("没有更新数据库记录,说明秒杀结束");
                 throw new SeckillCloseException("seckill is closed");
             } else {
                 // 这里至少减少的数量不为0了,秒杀成功了就增加一个秒杀成功详细
-                int insertCount = successKilledMapper.insertSuccessKilled(seckillId, userPhone);
+                int insertCount = SuccessKilledDao.insertSuccessKilled(seckillId, userPhone);
                 // 查看是否被重复插入,即用户是否重复秒杀
                 if (insertCount <= 0) {
                     throw new RepeatKillException("seckill repeated");
                 } else {
                     // 秒杀成功了,返回那条插入成功秒杀的信息
-                    SuccessKilled successKilled = successKilledMapper.queryByIdWithSeckill(seckillId, userPhone);
+                    SuccessKilled successKilled = SuccessKilledDao.queryByIdWithSeckill(seckillId, userPhone);
 //                    return new SeckillExecution(seckillId,1,"秒杀成功");
                       return new SeckillExecution(seckillId,1,"秒杀成功",successKilled);
                 }
@@ -1294,8 +1294,8 @@ return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!--配置自动扫描service包下的注解,在这里配置了自动扫描后,com.suny.service包下所有带有@Service注解的类都会被加入Spring容器中-->
-    <context:component-scan base-package="com.suny.service"/>
+    <!--配置自动扫描service包下的注解,在这里配置了自动扫描后,org.seckill.service包下所有带有@Service注解的类都会被加入Spring容器中-->
+    <context:component-scan base-package="org.seckill.service"/>
 
     <!--配置事物,这里时使用基于注解的事物-->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -1449,9 +1449,9 @@ public class SeckillServiceImplTest {
 SpringMvc默认就会默认去`WEB-INF`下查找默认规范的配置文件,像我这里配置的`servlet-name`是`seckill-dispatchServlet`的话,则默认会寻找`WEB-INF`一个名为`seckill-dispatchServlet-Servlet.xml`的配置文件
 
 #### 接下来编写Controller  `SeckillController`
-首先在`com.suny`下建立包为`Controller`的包,然后在里面新建一个类`SeckillController`：
+首先在`org.seckill`下建立包为`Controller`的包,然后在里面新建一个类`SeckillController`：
 ```java
-package com.suny.controller;
+package org.seckill.controller;
 
 /**
  * Created by 孙建荣 on 17-5-24.下午10:11
@@ -1558,9 +1558,9 @@ public class SeckillController {
      */
     @RequestMapping(value = "/time/now", method = RequestMethod.GET)
     @ResponseBody
-    public SeckillResult<LocalDateTime> time() {
-        LocalDateTime localDateTime = LocalDateTime.now();
-        return new SeckillResult<>(true, localDateTime);
+    public SeckillResult<Date> time() {
+        Date Date = Date.now();
+        return new SeckillResult<>(true, Date);
     }
 
 
@@ -1571,7 +1571,7 @@ public class SeckillController {
 ``SeckillResult``:
 
 ````java
-package com.suny.dto;
+package org.seckill.dto;
 
 /**
  * 封装所有的ajax请求返回类型,方便返回json
@@ -1803,10 +1803,10 @@ public class SeckillResult<T> {
 
 </html>
 ```
-  然后把项目运行一下我们又会碰到一个错误就是`jstl`中的`fmt`标签格式化时间只能格式化`java.Util.Date`类型的日期跟时间,而在我们这里我么使用了`java8`的`LocalDateTIme`,所以解析时间会出异常,这时我们应该想到自己去实现`jstl`标签来自定义解析这个时间日期
+  然后把项目运行一下我们又会碰到一个错误就是`jstl`中的`fmt`标签格式化时间只能格式化`java.Util.Date`类型的日期跟时间,而在我们这里我么使用了`java8`的`Date`,所以解析时间会出异常,这时我们应该想到自己去实现`jstl`标签来自定义解析这个时间日期
   自定义标签步骤如下:  
   - 在` /WEB-INF `创建目录 `tags`
-  - 然后创建一个文件` localDateTime.tag` 在`tags`目录下
+  - 然后创建一个文件` Date.tag` 在`tags`目录下
      + `localData.tag`用来格式化日期
       + `localDataTime.tag`用来格式化日期跟时间的组合,也就是数据库中的`Timestamp`类型
   -然后在`localDataTime.tag`中写自己自定义的格式化流程
@@ -1817,7 +1817,7 @@ public class SeckillResult<T> {
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--        这里是定义页面使用标签中的属性设置,<tags:localDataTime dateTime="${sk.createTIme}"/>     --%>
-<%@ attribute name="dateTime" required="true" type="java.time.LocalDateTime" %>
+<%@ attribute name="dateTime" required="true" type="java.time.Date" %>
 <%@ attribute name="pattern" required="false" type="java.lang.String" %>
 <%--首选判断日期时间转换规则是否存在,不存在给出默认的规则--%>
 <c:if test="${empty pattern}">
@@ -2105,20 +2105,20 @@ var seckill = {
             return time;
         }
     },
-    convertTime: function (localDateTime) {
-        var year = localDateTime.year;
-        var monthValue = localDateTime.monthValue;
-        var dayOfMonth = localDateTime.dayOfMonth;
-        var hour = localDateTime.hour;
-        var minute = localDateTime.minute;
-        var second = localDateTime.second;
+    convertTime: function (Date) {
+        var year = Date.year;
+        var monthValue = Date.monthValue;
+        var dayOfMonth = Date.dayOfMonth;
+        var hour = Date.hour;
+        var minute = Date.minute;
+        var second = Date.second;
         return year + "-" + monthValue + "-" + dayOfMonth + " " + hour + ":" + minute + ":" + second;
     }
 };
 
 ```
 自定义jstl标签参考资料  
-[stackoverflow上的资料1](https://stackoverflow.com/questions/35606551/jstl-localdatetime-format)  
+[stackoverflow上的资料1](https://stackoverflow.com/questions/35606551/jstl-Date-format)  
 [stackoverflow上的资料2](https://stackoverflow.com/questions/30230517/taglib-to-display-java-time-localdate-formatted)  
 编写完了就部署运行吧,不出意外的话就是这个样子的:  
 ![完整的页面](/images/result_1.jpg)
@@ -2157,7 +2157,7 @@ var seckill = {
         </dependency>
 ```
 
-+ 在`com.suny.dao`下建包`cache`
++ 在`org.seckill.dao`下建包`cache`
   + 然后建立类`RedisDao`
  ````java
 
@@ -2219,7 +2219,7 @@ public class RedisDao {
 + 下一步是在在`applicationContext-dao.xml`中注入`redisDao`
 ```xml
  <!--注入redisDao-->
-    <bean id="redisDao" class="com.suny.dao.cache.RedisDao">
+    <bean id="redisDao" class="org.seckill.dao.cache.RedisDao">
         <!--构造方法注入值-->
         <constructor-arg index="0" value="localhost"/>
         <constructor-arg index="1" value="6379"/>
@@ -2235,7 +2235,7 @@ public class RedisDao {
 @Override
     public Exposer exportSeckillUrl(long seckillId) {
         // 根据秒杀的ID去查询是否存在这个商品
-       /* Seckill seckill = seckillMapper.queryById(seckillId);
+       /* Seckill seckill = SeckillDao.queryById(seckillId);
         if (seckill == null) {
             logger.warn("查询不到这个秒杀产品的记录");
             return new Exposer(false, seckillId);
@@ -2243,7 +2243,7 @@ public class RedisDao {
         Seckill seckill = redisDao.getSeckill(seckillId);
         if (seckill == null) {
             // 访问数据库读取数据
-            seckill = seckillMapper.queryById(seckillId);
+            seckill = SeckillDao.queryById(seckillId);
             if (seckill == null) {
                 return new Exposer(false, seckillId);
             } else {
@@ -2253,9 +2253,9 @@ public class RedisDao {
         }
 
         // 判断是否还没到秒杀时间或者是过了秒杀时间
-        LocalDateTime startTime = seckill.getStartTime();
-        LocalDateTime endTime = seckill.getEndTime();
-        LocalDateTime nowTime = LocalDateTime.now();
+        Date startTime = seckill.getStartTime();
+        Date endTime = seckill.getEndTime();
+        Date nowTime = Date.now();
         //   开始时间大于现在的时候说明没有开始秒杀活动    秒杀活动结束时间小于现在的时间说明秒杀已经结束了
         if (nowTime.isAfter(startTime) && nowTime.isBefore(endTime)) {
             //秒杀开启,返回秒杀商品的id,用给接口加密的md5
@@ -2329,7 +2329,7 @@ CALL execute_seckill(1003, 13502178891, now(), @r_result);
 -- 获取结果
 SELECT @r_result;
 ```
-+ 在`SeckillMapper`中编写`killProduce()`方法
++ 在`SeckillDao`中编写`killProduce()`方法
 ```java
  /**
      *  使用储存过程执行秒杀
@@ -2337,7 +2337,7 @@ SELECT @r_result;
      */
     void killByProcedure(Map<String,Object> paramMap);
 ```
-+ 然后在`SeckillMapper.xml`中写`sql`语句
++ 然后在`SeckillDao.xml`中写`sql`语句
 
 ````xml
 <!--调用储存过程-->
@@ -2371,7 +2371,7 @@ SELECT @r_result;
         if (md5 == null || !md5.equals(getMd5(seckillId))) {
             return new SeckillExecution(seckillId, SeckillStatEnum.DATE_REWRITE);
         }
-        LocalDateTime killTime = LocalDateTime.now();
+        Date killTime = Date.now();
         Map<String, Object> map = new HashMap<>();
         map.put("seckillId", seckillId);
         map.put("phone", userPhone);
@@ -2379,11 +2379,11 @@ SELECT @r_result;
         map.put("result", null);
         // 执行储存过程,result被复制
         try {
-            seckillMapper.killByProcedure(map);
+            SeckillDao.killByProcedure(map);
             // 获取result
             int result = MapUtils.getInteger(map, "result", -2);
             if (result == 1) {
-                SuccessKilled successKilled = successKilledMapper.queryByIdWithSeckill(seckillId, userPhone);
+                SuccessKilled successKilled = SuccessKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                 return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
             } else {
                 return new SeckillExecution(seckillId, SeckillStatEnum.stateOf(result));
@@ -2405,23 +2405,23 @@ SELECT @r_result;
             throw new SeckillException("seckill data rewrite");
         }
         // 执行秒杀业务逻辑
-        LocalDateTime nowTIme = LocalDateTime.now();
+        Date nowTIme = Date.now();
 
         try {
             // 记录购买行为
-            int insertCount = successKilledMapper.insertSuccessKilled(seckillId, userPhone);
+            int insertCount = SuccessKilledDao.insertSuccessKilled(seckillId, userPhone);
             if (insertCount <= 0) {
                 // 重复秒杀
                 throw new RepeatKillException("seckill repeated");
             } else {
                 // 减库存 ,热点商品的竞争
-                int reduceNumber = seckillMapper.reduceNumber(seckillId, nowTIme);
+                int reduceNumber = SeckillDao.reduceNumber(seckillId, nowTIme);
                 if (reduceNumber <= 0) {
                     logger.warn("没有更新数据库记录,说明秒杀结束");
                     throw new SeckillCloseException("seckill is closed");
                 } else {
                     // 秒杀成功了,返回那条插入成功秒杀的信息  进行commit
-                    SuccessKilled successKilled = successKilledMapper.queryByIdWithSeckill(seckillId, userPhone);
+                    SuccessKilled successKilled = SuccessKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
                 }
             }

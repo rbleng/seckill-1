@@ -3,9 +3,9 @@
  * 首先我们要搭建出一个符合Maven约定的目录来,这里大致有两种方式,第一种:
 1. 第一种使用命令行手动构建一个maven结构的目录,当然我基本不会这样构建
 ```
-mvn archetype:generate -DgroupId=com.suny.seckill -DartifactId=seckill -Dpackage=com.suny.seckill -Dversion=1.0-SNAPSHOT -DarchetypeArtifactId=maven-archetype-webapp
+mvn archetype:generate -DgroupId=org.seckill.seckill -DartifactId=seckill -Dpackage=org.seckill.seckill -Dversion=1.0-SNAPSHOT -DarchetypeArtifactId=maven-archetype-webapp
 ```  
-这里要注意的是使用`archetype:generate`进行创建,在Maven老版本中是使用`archetype:create`,现在这种方法已经被弃用了,所以使用命令行创建的话注意了,稍微解释下这段语句的意思,就是构建一个一个`maven-archetype-webapp`骨架的Webapp项目,然后`groupId`为`com.suny.seckill `,`artifactId`为`seckill`,这里是Maven相关知识,可以按照自己的情况进行修改  
+这里要注意的是使用`archetype:generate`进行创建,在Maven老版本中是使用`archetype:create`,现在这种方法已经被弃用了,所以使用命令行创建的话注意了,稍微解释下这段语句的意思,就是构建一个一个`maven-archetype-webapp`骨架的Webapp项目,然后`groupId`为`org.seckill.seckill `,`artifactId`为`seckill`,这里是Maven相关知识,可以按照自己的情况进行修改  
 
 2.第二种直接在IDE中进行创建,这里以IDEA为例
   + 点击左上角`File>New>Project>Maven`
@@ -25,7 +25,7 @@ mvn archetype:generate -DgroupId=com.suny.seckill -DartifactId=seckill -Dpackage
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
           <modelVersion>4.0.0</modelVersion>
-          <groupId>com.suny.seckill</groupId>
+          <groupId>org.seckill.seckill</groupId>
           <artifactId>seckill</artifactId>
           <version>1.0-SNAPSHOT</version>
           <name>seckill Maven Webapp</name>
@@ -273,10 +273,10 @@ select @@version;
 #### 建立实体类
  - 首先建立`SuccessKilled`  秒杀状态表
 ```java
-package com.suny.entity;
+package org.seckill.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Date;
 
 
 public class SuccessKilled implements Serializable {
@@ -288,14 +288,14 @@ public class SuccessKilled implements Serializable {
     /* 秒杀的状态*/
     private short state;
     /* 创建时间*/
-    private LocalDateTime createTime;
+    private Date createTime;
     /* 多对一,因为一件商品在库存中肯定有许多,对应的购买信息也有很多*/
     private Seckill seckill;
 
     public SuccessKilled() {
     }
 
-    public SuccessKilled(long seckillId, long userPhone, short state, LocalDateTime createTime, Seckill seckill) {
+    public SuccessKilled(long seckillId, long userPhone, short state, Date createTime, Seckill seckill) {
         this.seckillId = seckillId;
         this.userPhone = userPhone;
         this.state = state;
@@ -327,11 +327,11 @@ public class SuccessKilled implements Serializable {
         this.state = state;
     }
 
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -359,10 +359,10 @@ public class SuccessKilled implements Serializable {
 ```
  - 再建立`Seckill` 秒杀商品信息
 ```java
-package com.suny.entity;
+package org.seckill.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.time.Date;
 
 public class Seckill implements Serializable {
 
@@ -374,16 +374,16 @@ public class Seckill implements Serializable {
     /* 秒杀的商品编号 */
     private int number;
     /* 开始秒杀的时间 */
-    private LocalDateTime startTime;
+    private Date startTime;
     /* 结束秒杀的时间 */
-    private LocalDateTime endTime;
+    private Date endTime;
     /* 创建的时间 */
-    private LocalDateTime createTIme;
+    private Date createTIme;
 
     public Seckill() {
     }
 
-    public Seckill(long seckillId, String name, int number, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime createTIme) {
+    public Seckill(long seckillId, String name, int number, Date startTime, Date endTime, Date createTIme) {
         this.seckillId = seckillId;
         this.name = name;
         this.number = number;
@@ -416,33 +416,33 @@ public class Seckill implements Serializable {
         this.number = number;
     }
 
-    public LocalDateTime getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
-    public LocalDateTime getCreateTIme() {
+    public Date getCreateTIme() {
         return createTIme;
     }
 
-    public void setCreateTIme(LocalDateTime createTIme) {
+    public void setCreateTIme(Date createTIme) {
         this.createTIme = createTIme;
     }
 
     @Override
     public String toString() {
-        return "com.suny.entity.Seckill{" +
+        return "org.seckill.entity.Seckill{" +
                 "主键ID=" + seckillId +
                 ", 秒杀商品='" + name + '\'' +
                 ", 编号=" + number +
@@ -456,17 +456,17 @@ public class Seckill implements Serializable {
 
 ```
  #### 对实体类创建对应的`mapper`接口,也就是`dao`接口类
- - 首先创建`SeckillMapper`,在我这里位于`com.suny.dao`包下
+ - 首先创建`SeckillDao`,在我这里位于`org.seckill.dao`包下
  ```java
-package com.suny.dao;
+package org.seckill.dao;
 
-import com.suny.entity.Seckill;
+import org.seckill.entity.Seckill;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.LocalDateTime;
+import java.time.Date;
 import java.util.List;
 
-public interface SeckillMapper {
+public interface SeckillDao {
     /**
      * 根据传过来的<code>seckillId</code>去减少商品的库存.
      *
@@ -474,7 +474,7 @@ public interface SeckillMapper {
      * @param killTime  秒杀的精确时间
      * @return 如果秒杀成功就返回1,否则就返回0
      */
-    int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") LocalDateTime killTime);
+    int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") Date killTime);
 
     /**
      * 根据传过来的<code>seckillId</code>去查询秒杀商品的详情.
@@ -495,15 +495,15 @@ public interface SeckillMapper {
 }
 
 ```
- - 再创建`SuccessKilledMapper`
+ - 再创建`SuccessKilledDao`
  ```java
-package com.suny.dao;
+package org.seckill.dao;
 
-import com.suny.entity.SuccessKilled;
+import org.seckill.entity.SuccessKilled;
 import org.apache.ibatis.annotations.Param;
 
 
-public interface SuccessKilledMapper {
+public interface SuccessKilledDao {
     /**
      * 插入一条详细的购买信息.
      *
@@ -527,14 +527,14 @@ public interface SuccessKilledMapper {
 #### 接下来书写`xml`配置文件
 ##### 建立对应的`mapper.xml`  
 
-首先在`src/main/resources`建立`com.suny.dao`这个包,也就是对应`mapper`接口文件包一样的包名,这样符合Maven的约定,就是资源放置在`Resource`包下,`Java`包下则是放置`java`类文件,编译后最后还是会在同一个目录下.  
+首先在`src/main/resources`建立`org.seckill.dao`这个包,也就是对应`mapper`接口文件包一样的包名,这样符合Maven的约定,就是资源放置在`Resource`包下,`Java`包下则是放置`java`类文件,编译后最后还是会在同一个目录下.  
 ![建包](../images/004.png)
-- 首先建立`SeckillMapper.xml`
+- 首先建立`SeckillDao.xml`
 ```xml
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.suny.dao.SeckillMapper">
+<mapper namespace="org.seckill.dao.SeckillDao">
     <!--这里的<=需要使用进行忽略,所以是要进行忽略,使用CDATA 区段中的文本会被解析器忽略 -->
     <update id="reduceNumber">
         UPDATE seckill
@@ -549,7 +549,7 @@ public interface SuccessKilledMapper {
               AND number > 0
     </update>
 
-    <select id="queryById" resultType="com.suny.entity.Seckill">
+    <select id="queryById" resultType="org.seckill.entity.Seckill">
         SELECT
             *
         FROM seckill AS s
@@ -557,7 +557,7 @@ public interface SuccessKilledMapper {
     </select>
 
 
-    <select id="queryAll" resultType="com.suny.entity.Seckill">
+    <select id="queryAll" resultType="org.seckill.entity.Seckill">
         SELECT
             *
         FROM seckill AS s
@@ -566,20 +566,20 @@ public interface SuccessKilledMapper {
     </select>
 </mapper>
 ```
-- 建立`SuccessKilledMapper.xml`
+- 建立`SuccessKilledDao.xml`
 ```xml
 
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.suny.dao.SuccessKilledMapper">
+<mapper namespace="org.seckill.dao.SuccessKilledDao">
     <!--添加主键冲突时忽略错误返回0-->  
     <insert id="insertSuccessKilled">
         INSERT IGNORE INTO success_killed (seckill_id, user_phone, state)
         VALUES (#{seckillId}, #{userPhone}, 0)
     </insert>
     <!--根据seckillId查询SuccessKilled对象,并携带Seckill对象,告诉mybatis把映射结果映射到SuccessKill属性同时映射到Seckill属性-->  
-    <select id="queryByIdWithSeckill" resultType="com.suny.entity.SuccessKilled">
+    <select id="queryByIdWithSeckill" resultType="org.seckill.entity.SuccessKilled">
         SELECT
             sk.seckill_id,
             sk.user_phone,
@@ -661,7 +661,7 @@ jdbc.url=jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=u
         <!--配置mybatis全局配置文件-->
         <property name="configLocation" value="mybatis-config.xml"/>
         <!--配置entity包,也就是实体类包,自动扫描,用于别名配置-->
-        <property name="typeAliasesPackage" value="com.suny.entity"/>
+        <property name="typeAliasesPackage" value="org.seckill.entity"/>
         <!--配置需要扫描的mapper.xml文件-->
         <property name="mapperLocations" value="classpath*:com/suny/dao/*.xml"/>
     </bean>
@@ -671,7 +671,7 @@ jdbc.url=jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=u
         <!--注入sqlSessionFactory,请注意不要使用sqlSessionFactoryBean,否则会出现注入异常-->
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
         <!--给出要扫描的mapper接口-->
-        <property name="basePackage" value="com.suny.dao"/>
+        <property name="basePackage" value="org.seckill.dao"/>
     </bean>
 
 </beans>
@@ -680,11 +680,11 @@ jdbc.url=jdbc:mysql://localhost:3306/seckill?useUnicode=true&characterEncoding=u
 
 - 基础的部分我们搭建完成了,然后要开始测试了
  在`IDEA`里面有一个快速建立测试的快捷键`Ctrl+Shift+T`,在某个要测试的类里面按下这个快捷键就会出现`Create new Test`,然后选择你要测试的方法跟测试的工具就可以了,这里我们使用Junit作为测试
-  + 建立`SeckillMapperTest`文件,代码如下
+  + 建立`SeckillDaoTest`文件,代码如下
  ```java
-package com.suny.dao;
+package org.seckill.dao;
 
-import com.suny.entity.Seckill;
+import org.seckill.entity.Seckill;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -692,7 +692,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 
-import java.time.LocalDateTime;
+import java.time.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -700,28 +700,28 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath:spring/applicationContext-dao.xml"})
-public class SeckillMapperTest {
+public class SeckillDaoTest {
     @Resource
-    private SeckillMapper seckillMapper;
+    private SeckillDao SeckillDao;
 
     @Test
     public void reduceNumber() throws Exception {
         long seckillId=1000;
-        LocalDateTime localDateTime=LocalDateTime.now();
-        int i = seckillMapper.reduceNumber(seckillId, localDateTime);
+        Date Date=Date.now();
+        int i = SeckillDao.reduceNumber(seckillId, Date);
         System.out.println(i);
     }
 
     @Test
     public void queryById() throws Exception {
         long seckillId = 1000;
-        Seckill seckill = seckillMapper.queryById(seckillId);
+        Seckill seckill = SeckillDao.queryById(seckillId);
         System.out.println(seckill.toString());
     }
 
     @Test
     public void queryAll() throws Exception {
-        List<Seckill> seckills = seckillMapper.queryAll(0, 100);
+        List<Seckill> seckills = SeckillDao.queryAll(0, 100);
         for (Seckill seckill : seckills) {
             System.out.println(seckill.toString());
         }

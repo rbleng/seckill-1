@@ -47,7 +47,7 @@ public interface SeckillService {
  + DTO,  跟VO的概念有点混淆,也是相当于页面需要的数据封装成一个实体类
  + POJO, 简单的无规则java对象
  
- 在`com.suny`下建立`dto`包,然后建立`Exposer`类,这个类是秒杀时数据库那边处理的结果的对象
+ 在`org.seckill`下建立`dto`包,然后建立`Exposer`类,这个类是秒杀时数据库那边处理的结果的对象
   ```java
 public class Exposer {
     /*是否开启秒杀 */
@@ -57,11 +57,11 @@ public class Exposer {
     /* id为seckillId的商品秒杀地址   */
     private long seckillId;
     /* 系统当前的时间   */
-    private LocalDateTime now;
+    private Date now;
     /* 秒杀开启的时间   */
-    private LocalDateTime start;
+    private Date start;
     /*  秒杀结束的时间  */
-    private LocalDateTime end;
+    private Date end;
 
     public Exposer() {
     }
@@ -72,7 +72,7 @@ public class Exposer {
         this.seckillId = seckillId;
     }
 
-    public Exposer(boolean exposed, long seckillId, LocalDateTime now, LocalDateTime start, LocalDateTime end) {
+    public Exposer(boolean exposed, long seckillId, Date now, Date start, Date end) {
         this.exposed = exposed;
         this.seckillId = seckillId;
         this.now = now;
@@ -109,27 +109,27 @@ public class Exposer {
         this.seckillId = seckillId;
     }
 
-    public LocalDateTime getNow() {
+    public Date getNow() {
         return now;
     }
 
-    public void setNow(LocalDateTime now) {
+    public void setNow(Date now) {
         this.now = now;
     }
 
-    public LocalDateTime getStart() {
+    public Date getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(Date start) {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
+    public Date getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEnd(Date end) {
         this.end = end;
     }
 
@@ -146,7 +146,7 @@ public class Exposer {
     }
 }
 ```
-然后我们给页面返回的数据应该是更加友好的封装数据,所以我们再在`com.suny.dto`包下再建立`SeckillExecution`用来封装给页面的结果:
+然后我们给页面返回的数据应该是更加友好的封装数据,所以我们再在`org.seckill.dto`包下再建立`SeckillExecution`用来封装给页面的结果:
 
 ```java
 public class SeckillExecution {
@@ -279,9 +279,9 @@ public class SeckillServiceImpl implements SeckillService {
     private final String salt = "thisIsASaltValue";
 
     @Autowired
-    private SeckillMapper seckillMapper;
+    private SeckillDao SeckillDao;
     @Autowired
-    private SuccessKilledMapper successKilledMapper;
+    private SuccessKilledDao SuccessKilledDao;
 
 
     /**
@@ -291,7 +291,7 @@ public class SeckillServiceImpl implements SeckillService {
      */
     @Override
     public List<Seckill> getSeckillList() {
-        return seckillMapper.queryAll(0, 4);
+        return SeckillDao.queryAll(0, 4);
     }
 
     /**
@@ -302,7 +302,7 @@ public class SeckillServiceImpl implements SeckillService {
      */
     @Override
     public Seckill getById(long seckillId) {
-        return seckillMapper.queryById(seckillId);
+        return SeckillDao.queryById(seckillId);
     }
 
     /**
@@ -314,7 +314,7 @@ public class SeckillServiceImpl implements SeckillService {
     @Override
     public Exposer exportSeckillUrl(long seckillId) {
         // 根据秒杀的ID去查询是否存在这个商品
-       /* Seckill seckill = seckillMapper.queryById(seckillId);
+       /* Seckill seckill = SeckillDao.queryById(seckillId);
         if (seckill == null) {
             logger.warn("查询不到这个秒杀产品的记录");
             return new Exposer(false, seckillId);
@@ -322,7 +322,7 @@ public class SeckillServiceImpl implements SeckillService {
         Seckill seckill = redisDao.getSeckill(seckillId);
         if (seckill == null) {
             // 访问数据库读取数据
-            seckill = seckillMapper.queryById(seckillId);
+            seckill = SeckillDao.queryById(seckillId);
             if (seckill == null) {
                 return new Exposer(false, seckillId);
             } else {
@@ -332,9 +332,9 @@ public class SeckillServiceImpl implements SeckillService {
         }
 
         // 判断是否还没到秒杀时间或者是过了秒杀时间
-        LocalDateTime startTime = seckill.getStartTime();
-        LocalDateTime endTime = seckill.getEndTime();
-        LocalDateTime nowTime = LocalDateTime.now();
+        Date startTime = seckill.getStartTime();
+        Date endTime = seckill.getEndTime();
+        Date nowTime = Date.now();
         //   开始时间大于现在的时候说明没有开始秒杀活动    秒杀活动结束时间小于现在的时间说明秒杀已经结束了
        /* if (!nowTime.isAfter(startTime)) {
             logger.info("现在的时间不在开始时间后面,未开启秒杀");
@@ -374,23 +374,23 @@ public class SeckillServiceImpl implements SeckillService {
             throw new SeckillException("seckill data rewrite");
         }
         // 执行秒杀业务逻辑
-        LocalDateTime nowTIme = LocalDateTime.now();
+        Date nowTIme = Date.now();
 
         try {
             //执行减库存操作
-            int reduceNumber = seckillMapper.reduceNumber(seckillId, nowTIme);
+            int reduceNumber = SeckillDao.reduceNumber(seckillId, nowTIme);
             if (reduceNumber <= 0) {
                 logger.warn("没有更新数据库记录,说明秒杀结束");
                 throw new SeckillCloseException("seckill is closed");
             } else {
                 // 这里至少减少的数量不为0了,秒杀成功了就增加一个秒杀成功详细
-                int insertCount = successKilledMapper.insertSuccessKilled(seckillId, userPhone);
+                int insertCount = SuccessKilledDao.insertSuccessKilled(seckillId, userPhone);
                 // 查看是否被重复插入,即用户是否重复秒杀
                 if (insertCount <= 0) {
                     throw new RepeatKillException("seckill repeated");
                 } else {
                     // 秒杀成功了,返回那条插入成功秒杀的信息
-                    SuccessKilled successKilled = successKilledMapper.queryByIdWithSeckill(seckillId, userPhone);
+                    SuccessKilled successKilled = SuccessKilledDao.queryByIdWithSeckill(seckillId, userPhone);
                     return new SeckillExecution(seckillId,1,"秒杀成功");
                 }
             }
@@ -484,8 +484,8 @@ return new SeckillExecution(seckillId, SeckillStatEnum.SUCCESS, successKilled);
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!--配置自动扫描service包下的注解,在这里配置了自动扫描后,com.suny.service包下所有带有@Service注解的类都会被加入Spring容器中-->
-    <context:component-scan base-package="com.suny.service"/>
+    <!--配置自动扫描service包下的注解,在这里配置了自动扫描后,org.seckill.service包下所有带有@Service注解的类都会被加入Spring容器中-->
+    <context:component-scan base-package="org.seckill.service"/>
 
     <!--配置事物,这里时使用基于注解的事物-->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

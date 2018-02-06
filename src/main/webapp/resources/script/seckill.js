@@ -1,6 +1,6 @@
 /**
+ *  存放主要交换逻辑js代码
  *  模块化javaScript
- * Created by jianrongsun on 17-5-25.
  */
 var seckill = {
     // 封装秒杀相关的ajax的url
@@ -179,13 +179,13 @@ var seckill = {
             return time;
         }
     },
-    convertTime: function (localDateTime) {
-        var year = localDateTime.year;
-        var monthValue = localDateTime.monthValue;
-        var dayOfMonth = localDateTime.dayOfMonth;
-        var hour = localDateTime.hour;
-        var minute = localDateTime.minute;
-        var second = localDateTime.second;
+    convertTime: function (Date) {
+        var year = Date.year;
+        var monthValue = Date.monthValue;
+        var dayOfMonth = Date.dayOfMonth;
+        var hour = Date.hour;
+        var minute = Date.minute;
+        var second = Date.second;
         return year + "-" + monthValue + "-" + dayOfMonth + " " + hour + ":" + minute + ":" + second;
     }
 };
