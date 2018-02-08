@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--        这里是定义页面使用标签中的属性设置,<tags:localDataTime dateTime="${sk.createTIme}"/>     --%>
-<%@ attribute name="dateTime" required="true" type="java.time.Date" %>
+<%@ attribute name="dateTime" required="true" type="java.util.Date" %>
 <%@ attribute name="pattern" required="false" type="java.lang.String" %>
 <%--首选判断日期时间转换规则是否存在,不存在给出默认的规则--%>
 <c:if test="${empty pattern}">

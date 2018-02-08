@@ -345,7 +345,7 @@ select @@version;
 package org.seckill.entity;
 
 import java.io.Serializable;
-import java.time.Date;
+import java.util.Date;
 
 
 public class SuccessKilled implements Serializable {
@@ -431,7 +431,7 @@ public class SuccessKilled implements Serializable {
 package org.seckill.entity;
 
 import java.io.Serializable;
-import java.time.Date;
+import java.util.Date;
 
 public class Seckill implements Serializable {
 
@@ -532,7 +532,7 @@ package org.seckill.dao;
 import org.seckill.entity.Seckill;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.Date;
+import java.util.Date;
 import java.util.List;
 
 public interface SeckillDao {
@@ -761,7 +761,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 
-import java.time.Date;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -1817,7 +1817,7 @@ public class SeckillResult<T> {
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--        这里是定义页面使用标签中的属性设置,<tags:localDataTime dateTime="${sk.createTIme}"/>     --%>
-<%@ attribute name="dateTime" required="true" type="java.time.Date" %>
+<%@ attribute name="dateTime" required="true" type="java.util.Date" %>
 <%@ attribute name="pattern" required="false" type="java.lang.String" %>
 <%--首选判断日期时间转换规则是否存在,不存在给出默认的规则--%>
 <c:if test="${empty pattern}">

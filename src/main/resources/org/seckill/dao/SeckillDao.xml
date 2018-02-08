@@ -6,17 +6,16 @@
         <id property="seckillId" column="seckill_id" javaType="Long" jdbcType="BIGINT"/>
         <result property="name" column="name" javaType="String" jdbcType="VARCHAR"/>
         <result property="number" column="number" javaType="Integer" jdbcType="VARCHAR"/>
-        <result property="startTime" column="start_time" javaType="java.time.Date" jdbcType="TIMESTAMP"/>
-        <result property="endTime" column="end_time" javaType="java.time.Date" jdbcType="TIMESTAMP"/>
-        <result property="createTIme" column="create_time" javaType="java.time.Date" jdbcType="TIMESTAMP"/>
+        <result property="startTime" column="start_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="end_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+        <result property="createTIme" column="create_time" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
     </resultMap>
     <update id="reduceNumber">
         UPDATE seckill
         SET number = number - 1
-        WHERE seckill_id = #{seckillId}
-              AND start_time <![CDATA[
-        <=
-        ]]> #{killTime}
+        WHERE
+            seckill_id = #{seckillId}
+        AND start_time <![CDATA[ <= ]]> #{killTime}
               AND end_time >= #{killTime}
               AND number > 0
     </update>
